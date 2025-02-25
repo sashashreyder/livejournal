@@ -1,8 +1,13 @@
 .navbar {
     display: flex;
-    gap: 20px;
+    justify-content: space-between; 
+    align-items: center;
     padding: 10px;
     background: #282c34;
+}
+.nav-links {
+    display: flex;
+    gap: 20px;
 }
 
 .navbar a {
@@ -14,3 +19,15 @@
 .navbar .active {
     border-bottom: 2px solid #61dafb;
 }
+
+.profile-icon {
+    font-size: 1.5rem;
+    color: white;
+    padding: 5px;
+    transition: 0.3s;
+}
+
+.profile-icon:hover {
+    color: #61dafb;
+}
+
