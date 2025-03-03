@@ -10,7 +10,6 @@ function Navbar() {
     return (
         <nav className="navbar">
             <div className="nav-links">
-                <NavLink to="/" className={({ isActive }) => isActive ? "active" : ""}>Home</NavLink>
                 <NavLink to="/diary" className={({ isActive }) => isActive ? "active" : ""}>Diary</NavLink>
                 <NavLink to="/feed" className={({ isActive }) => isActive ? "active" : ""}>Feed</NavLink>
             </div>

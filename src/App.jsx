@@ -17,6 +17,7 @@ function App() {
                 <Route path="/" element={<Feed />} />
                 <Route path="/profile" element={<Profile />} />
                 <Route path="/diary" element={<Diary />} />
+                <Route path="/feed" element={<Feed />} />
                 <Route path="/search" element={<Search />} />
             </Routes>
         </Router>
