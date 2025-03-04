@@ -1,54 +1,41 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { db } from "../firebaseConfig";
+import { collection, onSnapshot, doc, updateDoc } from "firebase/firestore";
 import "../styles/Feed.css";
 
 function Feed() {
-    const [posts, setPosts] = useState([
-        {
-            id: 1,
-            username: "Alice",
-            text: "Loving the new diary app!",
-            category: "Thoughts",
-            media: null,
-            comments: [],
-            commentInput: "",
-        },
-        {
-            id: 2,
-            username: "Bob",
-            text: "A beautiful sunset I captured today.",
-            category: "Photography",
-            media: "https://source.unsplash.com/random/400x300",
-            comments: [],
-            commentInput: "",
-        },
-        {
-            id: 3,
-            username: "Charlie",
-            text: "Reading an amazing book about React!",
-            category: "Books",
-            media: null,
-            comments: [],
-            commentInput: "",
-        },
-    ]);
+    const [posts, setPosts] = useState([]);
+    const [commentInputs, setCommentInputs] = useState({});
+
+    useEffect(() => {
+        const postsCollection = collection(db, "feedPosts");
+
+        const unsubscribe = onSnapshot(postsCollection, (snapshot) => {
+            const postsData = snapshot.docs.map((doc) => ({
+                id: doc.id,
+                ...doc.data(),
+            }));
+            setPosts(postsData);
+        });
+
+        return () => unsubscribe();
+    }, []);
 
     const handleInputChange = (postId, value) => {
-        setPosts(posts.map(post =>
-            post.id === postId ? { ...post, commentInput: value } : post
-        ));
+        setCommentInputs({ ...commentInputs, [postId]: value });
     };
 
-    const addComment = (postId) => {
-        setPosts(posts.map(post => {
-            if (post.id === postId && post.commentInput.trim()) {
-                return {
-                    ...post,
-                    comments: [...post.comments, post.commentInput],
-                    commentInput: "", 
-                };
-            }
-            return post;
-        }));
+    const addComment = async (postId) => {
+        if (!commentInputs[postId]?.trim()) return;
+
+        const postRef = doc(db, "feedPosts", postId);
+        const post = posts.find(post => post.id === postId);
+
+        await updateDoc(postRef, {
+            comments: [...(post.comments || []), commentInputs[postId]],
+        });
+
+        setCommentInputs({ ...commentInputs, [postId]: "" });
     };
 
     return (
@@ -58,7 +45,7 @@ function Feed() {
             <div className="posts-container">
                 {posts.map((post) => (
                     <div key={post.id} className="post">
-                        <h3>{post.username}</h3>
+                        <h3>{post.username || "Anonymous"}</h3>
                         <p>{post.text}</p>
                         {post.media && <img src={post.media} alt="Post media" className="post-media" />}
                         <p className="category">Category: {post.category}</p>
@@ -67,14 +54,14 @@ function Feed() {
                             <input
                                 type="text"
                                 placeholder="Add a comment..."
-                                value={post.commentInput}
+                                value={commentInputs[post.id] || ""}
                                 onChange={(e) => handleInputChange(post.id, e.target.value)}
                             />
                             <button onClick={() => addComment(post.id)}>Comment</button>
                         </div>
 
                         <div className="comments">
-                            {post.comments.map((comment, index) => (
+                            {post.comments && post.comments.map((comment, index) => (
                                 <p key={index} className="comment">{comment}</p>
                             ))}
                         </div>
@@ -86,4 +73,5 @@ function Feed() {
 }
 
 export default Feed;
+
 
