@@ -1,5 +1,5 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import Profile from "./pages/Profile";
+import Profile from "./pages/./Profile/Profile";
 import Diary from "./pages/Diary";
 import Feed from "./pages/Feed";
 import Search from "./pages/Search";
