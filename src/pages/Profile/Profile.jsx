@@ -1,10 +1,9 @@
 import ProfileSettings from "./ProfileSettings";
-import "../../styles/Profile.css"; // Импортируем стили из папки styles
+import "../../styles/Profile.css";
 
 function Profile() {
     return (
         <div className="profile-container">
-            <h1>Profile Page</h1>
             <ProfileSettings />
         </div>
     );
